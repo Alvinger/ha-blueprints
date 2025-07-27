@@ -18,11 +18,10 @@ blueprint:
           entity:
             - domain: light
 triggers:
-  - trigger:
-      - platform: state
-        entity_id: !input control_sensor
-        from: "off"
-        to: "on"
+  - trigger: state
+    entity_id: !input control_sensor
+    from: "off"
+    to: "on"
     condition:
       condition: and
       conditions:
