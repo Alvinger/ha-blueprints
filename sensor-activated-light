@@ -1,4 +1,4 @@
-ablueprint:
+blueprint:
   name: Sensor-activated light
   description: Turn a light on based on sensor
   domain: automation
