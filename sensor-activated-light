@@ -1,32 +1,51 @@
-- id: sensor_activated_light
-  alias: "Sensor-activated light"
-  trigger:
-    - platform: state
-      entity_id: binary_sensor.matkallaren_rorelse
-      from: "off"
-      to: "on"
-  condition:
-    condition: and
-    conditions:
-      - condition: state
-        entity_id: light.matkallaren
-        state: "off"
-  action:
-    - service: light.turn_on
-      target:
-        entity_id: light.matkallaren
-    - alias: "wait"
-      wait_for_trigger:
-        - platform: state
-          entity_id: light.matkallaren
-          from: "on"
-          to: "off"
-        - platform: state
-          entity_id: binary_sensor.matkallaren_rorelse
-          from: "on"
-          to: "off"
-    - condition: template
-      value_template: "{{ wait.trigger.idx == '1' }}"
-    - service: light.turn_off
-      target:
-        entity_id: light.matkallaren
+blueprint:
+  name: Sensor-activated light
+  description: Turn a light on based on sensor
+  domain: automation
+  input:
+    control_sensor:
+      name: Control Sensor
+      description: This sensor will be (de-)activating the light.
+      selector:
+        entity:
+          filter:
+            domain: binary_sensor
+    target_light:
+      name: Light
+      description: The light to control.
+      selector:
+        target:
+          entity:
+            - domain: light
+triggers:
+  - trigger:
+      - platform: state
+        entity_id: !input control_sensor
+        from: "off"
+        to: "on"
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: !input target_light
+          state: "off"
+actions:
+  - action:
+     - service: light.turn_on
+       target:
+         entity_id: !input target_light
+     - alias: "wait"
+       wait_for_trigger:
+         - platform: state
+           entity_id: !input target_light
+           from: "on"
+           to: "off"
+         - platform: state
+           entity_id: !input control_sensor
+           from: "on"
+           to: "off"
+     - condition: template
+       value_template: "{{ wait.trigger.idx == '1' }}"
+     - service: light.turn_off
+       target:
+         entity_id: !input target_light
