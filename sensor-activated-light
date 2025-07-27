@@ -29,18 +29,17 @@ condition:
 action:
   - service: light.turn_on
     target: !input target_light
-  - wait_for_trigger:
-      - platform: state
-        entity_id: !input control_sensor
-        from: "on"
-        to: "off"
+  - alias: "wait"
+    wait_for_trigger:
       - platform: state
         entity_id: !input target_light
         from: "on"
         to: "off"
-  - alias: "Wait"
-    Wait_for_trigger:
+      - platform: state
+        entity_id: !input control_sensor
+        from: "on"
+        to: "off"
     condition: template
-    value_template: "{{ wait.trigger.entity_id == (expand(!input control_sensor) | map(attribute='entity_id') | first) }}"
+      value_template: "{{ wait.trigger.idx == '1' }}"
   - service: light.turn_off
-    target: !input target_light
+      target: !input target_light
