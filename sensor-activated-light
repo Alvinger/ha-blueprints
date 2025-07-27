@@ -16,34 +16,36 @@ blueprint:
       selector:
         target:
           entity:
-            - domain: light
-triggers:
-  - trigger: state
+            domain: light
+
+trigger:
+  - platform: state
     entity_id: !input control_sensor
     from: "off"
     to: "on"
-    condition:
-      condition: and
-      conditions:
-        - condition: state
-          entity_id: !input target_light
-          state: "off"
-actions:
+
+condition:
+  - condition: state
+    entity_id: "{{ expand(!input target_light) | map(attribute='entity_id') | first }}"
+    state: "off"
+
+action:
   - service: light.turn_on
-    target:
-      entity_id: !input target_light
-  - alias: "wait"
-    wait_for_trigger:
-      - platform: state
-        entity_id: !input target_light
-        from: "on"
-        to: "off"
+    target: !input target_light
+
+  - wait_for_trigger:
       - platform: state
         entity_id: !input control_sensor
         from: "on"
         to: "off"
+      - platform: state
+        entity_id: "{{ expand(!input target_light) | map(attribute='entity_id') | first }}"
+        from: "on"
+        to: "off"
+
   - condition: template
-    value_template: "{{ wait.trigger.idx == '1' }}"
+    value_template: >
+      {{ wait.trigger.entity_id == (expand(!input control_sensor) | map(attribute='entity_id') | first) }}
+
   - service: light.turn_off
-    target:
-      entity_id: !input target_light
+    target: !input target_light
