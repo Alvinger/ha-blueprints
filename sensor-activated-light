@@ -43,7 +43,7 @@ actions:
         from: "on"
         to: "off"
   - condition: template
-      value_template: "{{ wait.trigger.idx == '1' }}"
+    value_template: "{{ wait.trigger.idx == '1' }}"
   - service: light.turn_off
-      target:
-        entity_id: !input target_light
+    target:
+      entity_id: !input target_light
