@@ -41,6 +41,6 @@ action:
         to: "off"
     condition: template
       value_template: >
-        {{ wait.trigger.entity_id == (expand(!input control_sensor) | map(attribute='entity_id') | first) }}
+        {{ wait.trigger.entity_id == !input control_sensor }}
   - service: light.turn_off
       target: !input target_light
