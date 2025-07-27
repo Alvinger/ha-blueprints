@@ -39,8 +39,8 @@ action:
         entity_id: !input control_sensor
         from: "on"
         to: "off"
-    condition: template
-      value_template: >
-        {{ wait.trigger.entity_id == !input control_sensor }}
+  - condition: template
+    value_template: >
+      {{ wait.trigger.entity_id == !input control_sensor }}
   - service: light.turn_off
       target: !input target_light
