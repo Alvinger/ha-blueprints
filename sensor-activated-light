@@ -1,0 +1,32 @@
+- id: sensor_activated_light
+  alias: "Sensor-activated light"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.matkallaren_rorelse
+      from: "off"
+      to: "on"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: light.matkallaren
+        state: "off"
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: light.matkallaren
+    - alias: "wait"
+      wait_for_trigger:
+        - platform: state
+          entity_id: light.matkallaren
+          from: "on"
+          to: "off"
+        - platform: state
+          entity_id: binary_sensor.matkallaren_rorelse
+          from: "on"
+          to: "off"
+    - condition: template
+      value_template: "{{ wait.trigger.idx == '1' }}"
+    - service: light.turn_off
+      target:
+        entity_id: light.matkallaren
