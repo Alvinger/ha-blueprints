@@ -43,4 +43,4 @@ action:
     value_template: >
       {{ wait.trigger.entity_id == !input control_sensor }}
   - service: light.turn_off
-      target: !input target_light
+    target: !input target_light
