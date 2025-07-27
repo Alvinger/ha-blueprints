@@ -29,7 +29,7 @@ triggers:
           entity_id: !input target_light
           state: "off"
 actions:
-  - action: light.turn_on
+  - service: light.turn_on
     target:
       entity_id: !input target_light
   - alias: "wait"
